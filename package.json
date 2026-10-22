@@ -1,0 +1,13 @@
+{
+  "name": "call-interpreter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Расширение Chrome: субтитры-перевод и подсказки ответов для звонков в браузере",
+  "scripts": {
+    "test": "node test/run.mjs",
+    "test:smoke": "node test/cdp-smoke.mjs",
+    "test:e2e": "node test/e2e.mjs",
+    "test:e2e:local": "node test/e2e.mjs --local",
+    "whisper": "./scripts/start-whisper.sh"
+  }
+}

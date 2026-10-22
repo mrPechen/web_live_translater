@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Audio source — e2e</title>
+    <style>
+      body { margin: 0; height: 100vh; display: grid; place-items: center; background: #0a0b0f; color: #e8ebf2;
+             font: 15px/1.5 -apple-system, system-ui, sans-serif; }
+      .card { text-align: center; }
+      .bar { width: 260px; height: 6px; border-radius: 3px; background: #1c2029; overflow: hidden; margin: 16px auto 0; }
+      .bar i { display: block; height: 100%; width: 40%; background: #7aa2ff; animation: slide 6s linear infinite; }
+      @keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(350%); } }
+      #state { color: #9aa3b2; font-size: 12px; margin-top: 10px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div>Mock speaker · speech sample, looped with 1.5 s pauses</div>
+      <div class="bar"><i></i></div>
+      <div id="state">загрузка…</div>
+    </div>
+    <script>
+      // Играем через WebAudio, а не <audio>: в headless медиаэлемент молчит,
+      // а граф WebAudio захватывается tabCapture и там, и там.
+      const state = document.getElementById('state');
+      const ctx = new AudioContext();
+
+      fetch('fixtures/speech.wav')
+        .then((r) => r.arrayBuffer())
+        .then((data) => ctx.decodeAudioData(data))
+        .then((buffer) => {
+          const source = ctx.createBufferSource();
+          source.buffer = buffer;
+          source.loop = true; // в файле 1.5 с тишины в конце — этого хватает VAD
+          source.connect(ctx.destination);
+          source.start();
+          ctx.resume();
+          state.textContent = `играю ${buffer.duration.toFixed(1)} с по кругу`;
+        })
+        .catch((err) => {
+          state.textContent = `ошибка: ${err.message}`;
+        });
+
+      document.addEventListener('click', () => ctx.resume());
+    </script>
+  </body>
+</html>

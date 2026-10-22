@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Call Interpreter — настройки</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0f1116;
+        --card: #171a21;
+        --fg: #eceff5;
+        --dim: #9aa3b2;
+        --line: #262b35;
+        --accent: #7aa2ff;
+        --ok: #3ddc84;
+        --err: #ff6b6f;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 32px 20px 64px;
+        background: var(--bg);
+        color: var(--fg);
+        font: 14px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Inter, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page { max-width: 760px; margin: 0 auto; }
+      h1 { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.01em; }
+      .sub { color: var(--dim); margin: 0 0 28px; font-size: 13px; }
+      section {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px;
+        margin-bottom: 16px;
+      }
+      h2 {
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+        color: var(--dim); margin: 0 0 14px; font-weight: 600;
+      }
+      label { display: block; font-size: 12px; color: var(--dim); margin-bottom: 4px; }
+      .field { margin-bottom: 14px; }
+      .field:last-child { margin-bottom: 0; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      input, select, textarea {
+        width: 100%; font: inherit; font-size: 14px;
+        background: #0d1015; color: var(--fg);
+        border: 1px solid var(--line); border-radius: 9px;
+        padding: 9px 11px; outline: none;
+      }
+      input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+      input:disabled, select:disabled { opacity: 0.45; }
+      textarea { min-height: 190px; resize: vertical; line-height: 1.45; }
+      .hint { font-size: 12px; color: var(--dim); margin-top: 8px; }
+      .check { display: flex; gap: 9px; align-items: center; font-size: 13px; margin-bottom: 10px; }
+      .check input { width: 16px; height: 16px; margin: 0; }
+      .check label { margin: 0; color: var(--fg); }
+      .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+      .presets { display: flex; gap: 8px; flex-wrap: wrap; }
+      .presets button { padding: 6px 11px; font-size: 12px; border-radius: 8px; }
+      button {
+        font: inherit; font-size: 13px; padding: 9px 16px; border-radius: 9px; cursor: pointer;
+        border: 1px solid var(--line); background: #20242d; color: var(--fg);
+      }
+      button:hover { background: #272c36; }
+      button.primary { background: var(--accent); border-color: transparent; color: #0a0d14; font-weight: 600; }
+      #status { font-size: 13px; color: var(--dim); }
+      #status.ok { color: var(--ok); }
+      #status.err { color: var(--err); }
+      code { background: #0d1015; padding: 1px 5px; border-radius: 5px; font-size: 12px; }
+      .warn {
+        border: 1px solid rgba(255, 178, 74, 0.35);
+        background: rgba(255, 178, 74, 0.07);
+        color: #ffce8a; border-radius: 10px; padding: 10px 12px; font-size: 12.5px; margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <h1>Call Interpreter EN→RU</h1>
+      <p class="sub">Субтитры-перевод звонка и готовые ответы из ваших материалов.</p>
+
+      <section>
+        <h2>Режим</h2>
+        <div class="field">
+          <label for="provider">Что делаем</label>
+          <select id="provider">
+            <option value="demo">Демо — без API, показать интерфейс</option>
+            <option value="openai">Живой перевод через API</option>
+          </select>
+          <div class="hint">Демо проигрывает заготовленный диалог: удобно проверить субтитры и панель.</div>
+        </div>
+      </section>
+
+      <section>
+        <h2>1. Распознавание речи</h2>
+        <div class="field">
+          <label for="sttBaseUrl">Base URL</label>
+          <input id="sttBaseUrl" type="text" spellcheck="false" />
+        </div>
+        <div class="field">
+          <label for="sttApiKey">API-ключ</label>
+          <input id="sttApiKey" type="password" placeholder="sk-…" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="field">
+          <label for="sttModel">Модель</label>
+          <input id="sttModel" type="text" spellcheck="false" />
+        </div>
+        <div class="warn">
+          Здесь нужен сервис, который принимает <b>звук</b> на <code>/audio/transcriptions</code>.
+          DeepSeek V4.1 Flash мультимодальный, но только по картинкам — аудио он не принимает,
+          как и остальные текстовые модели. Бесплатная альтернатива: локальный
+          <code>faster-whisper-server</code> на <code>127.0.0.1</code>.
+        </div>
+      </section>
+
+      <section>
+        <h2>2. Перевод и ответы</h2>
+        <div class="field">
+          <label>Пресет</label>
+          <div class="presets">
+            <button type="button" data-preset="openai">OpenAI</button>
+            <button type="button" data-preset="deepseek">DeepSeek</button>
+            <button type="button" data-preset="ollama">Ollama (локально)</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="llmBaseUrl">Base URL</label>
+          <input id="llmBaseUrl" type="text" spellcheck="false" />
+        </div>
+        <div class="field">
+          <label for="llmApiKey">API-ключ</label>
+          <input id="llmApiKey" type="password" placeholder="sk-…" autocomplete="off" spellcheck="false" />
+          <div class="hint">Для локальной Ollama ключ не проверяется — впишите любой текст, например <code>ollama</code>.</div>
+        </div>
+        <div class="field">
+          <label for="llmModel">Модель</label>
+          <input id="llmModel" type="text" spellcheck="false" />
+        </div>
+        <div class="actions">
+          <button id="test" type="button">Проверить оба ключа</button>
+          <span id="status"></span>
+        </div>
+      </section>
+
+      <section>
+        <h2>3. Языки</h2>
+        <div class="row">
+          <div class="field">
+            <label for="sourceLang">Язык собеседника</label>
+            <input id="sourceLang" type="text" placeholder="en" />
+          </div>
+          <div class="field">
+            <label for="targetLang">Язык субтитров</label>
+            <input id="targetLang" type="text" placeholder="ru" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>4. Материалы для ответов</h2>
+        <div class="row">
+          <div class="field">
+            <label for="userName">Имя</label>
+            <input id="userName" type="text" placeholder="Дмитрий" />
+          </div>
+          <div class="field">
+            <label for="userRole">Роль</label>
+            <input id="userRole" type="text" placeholder="AI-инженер" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="company">Компания / проект</label>
+          <input id="company" type="text" />
+        </div>
+        <div class="field">
+          <label for="brief">Что модель должна знать о вас</label>
+          <textarea
+            id="brief"
+            spellcheck="false"
+            placeholder="Факты, цифры, опыт, цены, сроки, ответы на частые вопросы, чего НЕ обещать.&#10;&#10;Пример:&#10;- Опыт 6 лет, из них 2 года LLM-агенты в поддержке&#10;- Кейс: сократили первое время ответа с 4 часов до 10 минут&#10;- Пилот: 2 недели, фиксированная цена&#10;- Не называю цену без оценки объёма"
+          ></textarea>
+          <div class="hint">Только эти факты попадут в ответы. Модели запрещено выдумывать — лучше скажет «уточню».</div>
+        </div>
+        <div class="field">
+          <label for="glossary">Глоссарий — имена и термины, которые нельзя перевирать</label>
+          <textarea
+            id="glossary"
+            spellcheck="false"
+            style="min-height: 84px"
+            placeholder="Kubernetes, DeepSeek, Sber, FastAPI, Qwen"
+          ></textarea>
+          <div class="hint">
+            Подсказка уходит и в распознавание (чтобы «Kubernetis» не превращалось в мусор), и в перевод.
+          </div>
+        </div>
+        <div class="check">
+          <input id="thinkingEnabled" type="checkbox" />
+          <label for="thinkingEnabled">Разрешить DeepSeek «думать» перед ответом (медленнее, но точнее)</label>
+        </div>
+        <div class="check">
+          <input id="autoAnswer" type="checkbox" />
+          <label for="autoAnswer">Подсказывать ответ, когда собеседник задаёт вопрос</label>
+        </div>
+        <div class="check">
+          <input id="showSource" type="checkbox" />
+          <label for="showSource">Показывать оригинальную фразу над переводом</label>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button id="save" class="primary" type="button">Сохранить</button>
+        <span id="saved" class="hint"></span>
+      </div>
+
+      <p class="hint" style="margin-top: 24px">
+        Как пользоваться: откройте звонок в браузере → нажмите иконку расширения (или
+        <code>Alt+Shift+T</code>) → говорите. Субтитры появятся внизу, ответы — справа.
+        Предупредите собеседника, что пользуетесь переводом.
+      </p>
+    </div>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

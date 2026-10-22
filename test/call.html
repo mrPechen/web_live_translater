@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Weekly sync — mock call</title>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        background: #0a0b0f;
+        color: #e8ebf2;
+        font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+        display: flex; flex-direction: column;
+      }
+      header {
+        display: flex; align-items: center; gap: 10px;
+        padding: 12px 18px; border-bottom: 1px solid #1c2029; font-size: 13px; color: #9aa3b2;
+      }
+      header b { color: #e8ebf2; font-weight: 600; }
+      .live { width: 7px; height: 7px; border-radius: 50%; background: #e5484d; }
+      main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; min-height: 0; }
+      .tile {
+        border-radius: 14px; overflow: hidden; position: relative;
+        background: radial-gradient(circle at 30% 30%, #232a3a, #12151c 70%);
+        border: 1px solid #1c2029; display: flex; align-items: center; justify-content: center;
+      }
+      .tile.self { background: radial-gradient(circle at 70% 40%, #2a2338, #12151c 70%); }
+      .avatar {
+        width: 92px; height: 92px; border-radius: 50%;
+        background: linear-gradient(135deg, #4f5bd5, #7aa2ff);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 32px; font-weight: 600; color: #0a0d14;
+      }
+      .tile.self .avatar { background: linear-gradient(135deg, #8a5cf6, #d48aff); }
+      .name {
+        position: absolute; left: 12px; bottom: 12px; font-size: 12px;
+        background: rgba(0, 0, 0, 0.45); padding: 4px 9px; border-radius: 7px;
+      }
+      footer {
+        display: flex; justify-content: center; gap: 14px; padding: 16px;
+        border-top: 1px solid #1c2029;
+      }
+      .ctl {
+        width: 46px; height: 46px; border-radius: 50%; background: #1c2029;
+        display: flex; align-items: center; justify-content: center; font-size: 16px; color: #e8ebf2;
+      }
+      .ctl.end { background: #e5484d; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="live"></span>
+      <b>Weekly sync</b>
+      <span>· mock call page for smoke test</span>
+    </header>
+    <main>
+      <div class="tile">
+        <div class="avatar">A</div>
+        <span class="name">Alex (interlocutor)</span>
+      </div>
+      <div class="tile self">
+        <div class="avatar">D</div>
+        <span class="name">You</span>
+      </div>
+    </main>
+    <footer>
+      <div class="ctl">🎤</div>
+      <div class="ctl">📷</div>
+      <div class="ctl">⛶</div>
+      <div class="ctl end">📞</div>
+    </footer>
+  </body>
+</html>
